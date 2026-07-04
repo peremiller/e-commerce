@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>B20 Shop</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#16181d; --muted:#6b7280; --line:#e5e7eb;
+  --brand:#0e7c5a; --brand-soft:#d6f2e7; --danger:#dc2626;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04); --radius:14px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0e1014; --card:#171a21; --ink:#e8eaed; --muted:#9aa0aa; --line:#262b34;
+  --brand:#18a877; --brand-soft:#0d3b2d; --danger:#f87171;
+  --shadow:0 1px 3px rgba(0,0,0,.5);
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 16px;font-weight:800;font-size:19px}
+.topbar .logo{width:30px;height:30px;border-radius:8px;background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.tabs{display:flex;gap:6px;padding:0 12px 10px;overflow-x:auto}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:8px 14px;font-weight:600;cursor:pointer;white-space:nowrap;position:relative}
+.tab.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.badge{position:absolute;top:-6px;right:-4px;background:var(--danger);color:#fff;border-radius:999px;
+  font-size:11px;font-weight:700;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 4px}
+.screen{padding:4px 16px 110px;max-width:860px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:12px;margin-bottom:10px}
+.muted{color:var(--muted)}
+.btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:10px 14px;
+  font-weight:600;cursor:pointer;font-size:14px}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+.icon{background:0;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:6px}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--card);color:var(--ink);margin:6px 0 10px;font-size:15px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.item .img{font-size:44px;text-align:center;padding:10px 0;background:var(--bg);border-radius:10px}
+.item .nm{font-weight:700;font-size:14px}
+.item .pr{font-weight:800;color:var(--brand)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.status{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.st-1{background:#fef3c7;color:#92400e}.st-2{background:#dbeafe;color:#1e40af}
+.st-3{background:#e0e7ff;color:#3730a3}.st-4{background:#d1fae5;color:#065f46}
+.st-5{background:#fee2e2;color:#991b1b}
+@media(prefers-color-scheme:dark){
+  .st-1{background:#42320b;color:#fcd34d}.st-2{background:#172554;color:#93c5fd}
+  .st-3{background:#1e1b4b;color:#a5b4fc}.st-4{background:#052e21;color:#6ee7b7}
+  .st-5{background:#450a0a;color:#fca5a5}
+}
+.fab{position:fixed;right:16px;bottom:16px;z-index:40;border:0;cursor:pointer;background:var(--brand);
+  color:#fff;font-weight:700;border-radius:999px;padding:14px 18px;box-shadow:var(--shadow);font-size:15px}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;
+  justify-content:center;z-index:50}
+.modal{width:100%;max-width:480px;background:var(--card);border:1px solid var(--line);
+  border-radius:18px 18px 0 0;max-height:90vh;overflow:auto;position:relative;padding:16px}
+@media(min-width:520px){.backdrop{align-items:center}.modal{border-radius:18px}}
+.modal label{display:block;margin:10px 0;font-size:13px;color:var(--muted)}
+.modal input,.modal select,.modal textarea{width:100%;margin-top:4px;padding:9px;
+  border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:15px}
+.modal .close{position:absolute;top:10px;right:10px}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:13px;
+  opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
+.toast.show{opacity:.96;transform:translateX(-50%) translateY(0)}
+.total{font-size:18px;font-weight:800}
+.oitems{border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;font-size:13px}
+.empty{text-align:center;padding:40px 10px}
+.empty .big{font-size:44px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<button id="fab" class="fab" style="display:none"></button>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script>
+"use strict";
+const LS = "b20shop.v1";
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc = s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const peso = n=>"₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDT = iso=>{ if(!iso) return ""; const d=new Date(iso);
+  return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})+" "+
+         d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}); };
+function txCode(){ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c="";
+  for(let i=0;i<12;i++) c+=A[Math.floor(Math.random()*A.length)]; return c; }
+function toast(m){ const r=$("#toastRoot"),e=document.createElement("div");
+  e.className="toast"; e.textContent=m; r.appendChild(e);
+  requestAnimationFrame(()=>e.classList.add("show"));
+  setTimeout(()=>{e.classList.remove("show");setTimeout(()=>e.remove(),250);},2400); }
+
+/* ---- schema lookups (mirror b20_ecommerce tables) ---- */
+const STATUSES = [
+  {id:1,name:"Pending"},{id:2,name:"Processing"},{id:3,name:"Shipped"},
+  {id:4,name:"Delivered"},{id:5,name:"Cancelled"}
+];
+const PAYMENT_MODES = [
+  {id:1,name:"Cash on Delivery"},{id:2,name:"Credit / Debit Card"},
+  {id:3,name:"GCash"},{id:4,name:"Bank Transfer"}
+];
+const statusName = id=>(STATUSES.find(s=>s.id===id)||{}).name||"?";
+const payName    = id=>(PAYMENT_MODES.find(p=>p.id===id)||{}).name||"?";
+
+function seed(){
+  const categories = [
+    {id:1,name:"Electronics"},{id:2,name:"Fashion"},{id:3,name:"Home & Living"},
+    {id:4,name:"Groceries"},{id:5,name:"Sports"}
+  ];
+  const items = [
+    {id:1, name:"Wireless Earbuds",     price:1499.00, image_path:"🎧", category_id:1, description:"Bluetooth 5.3 earbuds with charging case, 24-hour total battery life and touch controls."},
+    {id:2, name:"Smart Watch",          price:2799.00, image_path:"⌚", category_id:1, description:"Fitness tracking, heart-rate monitor, notifications, 7-day battery."},
+    {id:3, name:"Power Bank 20,000mAh", price:899.00,  image_path:"🔋", category_id:1, description:"Fast-charge dual-USB power bank, airline safe."},
+    {id:4, name:"Bluetooth Speaker",    price:1250.00, image_path:"🔊", category_id:1, description:"Water-resistant portable speaker with deep bass, 12-hour playtime."},
+    {id:5, name:"Classic White Tee",    price:349.00,  image_path:"👕", category_id:2, description:"100% combed cotton unisex tee. Sizes S–XXL."},
+    {id:6, name:"Denim Jacket",         price:1590.00, image_path:"🧥", category_id:2, description:"Medium-wash denim jacket with button front and chest pockets."},
+    {id:7, name:"Canvas Sneakers",      price:1190.00, image_path:"👟", category_id:2, description:"Low-cut canvas sneakers with rubber sole. True to size."},
+    {id:8, name:"Leather Wallet",       price:750.00,  image_path:"👛", category_id:2, description:"Slim bifold genuine-leather wallet with 6 card slots."},
+    {id:9, name:"Aroma Diffuser",       price:680.00,  image_path:"🕯️", category_id:3, description:"300ml ultrasonic diffuser with 7-color mood light and auto shut-off."},
+    {id:10,name:"Throw Blanket",        price:990.00,  image_path:"🛋️", category_id:3, description:"Soft fleece throw blanket, 150×200cm, machine washable."},
+    {id:11,name:"Ceramic Mug Set (4)",  price:520.00,  image_path:"☕", category_id:3, description:"Set of four 350ml stoneware mugs in assorted colors."},
+    {id:12,name:"LED Desk Lamp",        price:840.00,  image_path:"💡", category_id:3, description:"Dimmable desk lamp with 3 color temperatures and USB charging port."},
+    {id:13,name:"Arabica Coffee Beans 500g", price:435.00, image_path:"🫘", category_id:4, description:"Medium-roast Benguet arabica, whole bean, roasted weekly."},
+    {id:14,name:"Wildflower Honey 350ml",    price:310.00, image_path:"🍯", category_id:4, description:"Raw unfiltered honey from Palawan wildflowers."},
+    {id:15,name:"Dried Mangoes 200g",        price:185.00, image_path:"🥭", category_id:4, description:"Classic Cebu dried mangoes — sweet, chewy, no preservatives."},
+    {id:16,name:"Yoga Mat 6mm",         price:699.00,  image_path:"🧘", category_id:5, description:"Non-slip TPE yoga mat with carry strap, 183×61cm."},
+    {id:17,name:"Jump Rope",            price:245.00,  image_path:"🪢", category_id:5, description:"Adjustable speed rope with ball-bearing handles."},
+    {id:18,name:"Basketball (Size 7)",  price:1150.00, image_path:"🏀", category_id:5, description:"Composite leather indoor/outdoor basketball, official size and weight."}
+  ];
+  return {
+    seeded:true, categories, items,
+    cart:[],            // {item_id, quantity}
+    orders:[],          // {id, transaction_code, purchase_date, status_id, payment_mode_id, address, items:[{item_id, name, price, quantity}]}
+    user:{firstname:"",lastname:"",username:"",email:"",address:""}
+  };
+}
+function normalize(s){
+  s = s||{};
+  s.categories = Array.isArray(s.categories)&&s.categories.length ? s.categories : seed().categories;
+  s.items      = Array.isArray(s.items)&&s.items.length ? s.items : seed().items;
+  s.cart       = Array.isArray(s.cart) ? s.cart.filter(c=>c&&c.item_id) : [];
+  s.orders     = Array.isArray(s.orders) ? s.orders : [];
+  s.user       = s.user||{}; ["firstname","lastname","username","email","address"].forEach(k=>{ s.user[k]=s.user[k]||""; });
+  return s;
+}
+function boot(){
+  try{ const raw=localStorage.getItem(LS); if(raw) return normalize(JSON.parse(raw)); }catch(e){}
+  return normalize(seed());
+}
+let state = boot();
+try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){} }
+
+/* ---- derived helpers ---- */
+const item = id=>state.items.find(i=>i.id===id);
+const cartCount = ()=>state.cart.reduce((n,c)=>n+c.quantity,0);
+const cartTotal = ()=>state.cart.reduce((n,c)=>{ const it=item(c.item_id); return n+(it?it.price*c.quantity:0); },0);
+function setQty(id,q){
+  const line = state.cart.find(c=>c.item_id===id);
+  if(q<=0){ state.cart = state.cart.filter(c=>c.item_id!==id); }
+  else if(line){ line.quantity=q; }
+  else{ state.cart.push({item_id:id,quantity:q}); }
+  save();
+}
+
+/* ---- render ---- */
+let view="shop", shopCat=0, shopQ="";
+const TABS=[["shop","Shop"],["cart","Cart"],["orders","Orders"],["account","Account"]];
+
+function render(){
+  $("#app").innerHTML = `
+    <header class="topbar"><span class="logo">🛍</span> B20 Shop</header>
+    <nav class="tabs">${TABS.map(([k,l])=>`
+      <button class="tab ${view===k?'on':''}" data-tab="${k}">${l}
+        ${k==="cart"&&cartCount()?`<span class="badge">${cartCount()}</span>`:""}
+      </button>`).join("")}</nav>
+    <main class="screen">${
+      view==="shop"    ? renderShop() :
+      view==="cart"    ? renderCart() :
+      view==="orders"  ? renderOrders() : renderAccount()
+    }</main>`;
+  wire(); renderFab();
+}
+
+function renderShop(){
+  const cats=[{id:0,name:"All"},...state.categories];
+  const q=shopQ.trim().toLowerCase();
+  const list=state.items.filter(i=>
+    (!shopCat||i.category_id===shopCat) &&
+    (!q||i.name.toLowerCase().includes(q)||String(i.description||"").toLowerCase().includes(q)));
+  return `
+    <input class="search" id="q" placeholder="Search products…" value="${esc(shopQ)}">
+    <div class="chips">${cats.map(c=>`
+      <button class="chip ${shopCat===c.id?'on':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join("")}</div>
+    ${list.length?`<div class="grid">${list.map(i=>{
+      const line=state.cart.find(c=>c.item_id===i.id);
+      return `<div class="item" data-view="${i.id}">
+        <div class="img">${i.image_path}</div>
+        <div class="nm">${esc(i.name)}</div>
+        <div class="pr">${peso(i.price)}</div>
+        ${line?`<div class="qty">
+            <button data-dec="${i.id}">−</button><b>${line.quantity}</b><button data-inc="${i.id}">+</button>
+          </div>`
+        :`<button class="btn sm" data-add="${i.id}">Add to cart</button>`}
+      </div>`;}).join("")}</div>`
+    :`<div class="empty card"><div class="big">🔎</div><p class="muted">No products match your search.</p></div>`}`;
+}
+
+function renderCart(){
+  if(!state.cart.length)
+    return `<div class="empty card"><div class="big">🛒</div>
+      <p class="muted">Your cart is empty.</p>
+      <button class="btn" data-tab="shop">Browse the shop</button></div>`;
+  return state.cart.map(c=>{
+    const it=item(c.item_id); if(!it) return "";
+    return `<div class="card row">
+      <div style="font-size:30px">${it.image_path}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${esc(it.name)}</div>
+        <div class="muted">${peso(it.price)} each</div>
+      </div>
+      <div class="qty">
+        <button data-dec="${it.id}">−</button><b>${c.quantity}</b><button data-inc="${it.id}">+</button>
+      </div>
+      <div style="min-width:86px;text-align:right;font-weight:700">${peso(it.price*c.quantity)}</div>
+    </div>`;}).join("")+`
+    <div class="card row">
+      <span class="muted">Total (${cartCount()} item${cartCount()===1?"":"s"})</span>
+      <span class="total">${peso(cartTotal())}</span>
+    </div>`;
+}
+
+function renderOrders(){
+  if(!state.orders.length)
+    return `<div class="empty card"><div class="big">📦</div>
+      <p class="muted">No orders yet — checkout from your cart and it will appear here.</p></div>`;
+  return state.orders.slice().reverse().map(o=>{
+    const total=o.items.reduce((n,l)=>n+l.price*l.quantity,0);
+    const canAdvance=o.status_id>=1&&o.status_id<4;
+    return `<div class="card">
+      <div class="row">
+        <div>
+          <div style="font-weight:800;letter-spacing:.5px">#${esc(o.transaction_code)}</div>
+          <div class="muted" style="font-size:13px">${fmtDT(o.purchase_date)} · ${esc(payName(o.payment_mode_id))}</div>
+        </div>
+        <span class="status st-${o.status_id}">${esc(statusName(o.status_id))}</span>
+      </div>
+      <div class="oitems">${o.items.map(l=>
+        `<div class="row"><span>${esc(l.name)} × ${l.quantity}</span><span>${peso(l.price*l.quantity)}</span></div>`).join("")}
+        <div class="row" style="margin-top:6px"><b>Total</b><b>${peso(total)}</b></div>
+      </div>
+      <div class="row" style="margin-top:10px;justify-content:flex-end;gap:8px">
+        ${o.status_id===1?`<button class="btn ghost sm" data-cancel="${o.id}">Cancel</button>`:""}
+        ${canAdvance?`<button class="btn sm" data-advance="${o.id}">Mark ${esc(statusName(o.status_id+1))}</button>`:""}
+      </div>
+    </div>`;}).join("");
+}
+
+function renderAccount(){
+  const u=state.user;
+  const has=u.firstname||u.lastname||u.username||u.email;
+  return `<div class="card">
+      <div class="row"><b>My profile</b><button class="btn ghost sm" id="editProfile">${has?"Edit":"Set up"}</button></div>
+      ${has?`
+        <p style="margin:8px 0 2px;font-weight:700">${esc(u.firstname)} ${esc(u.lastname)}</p>
+        <p class="muted" style="margin:2px 0">@${esc(u.username||"—")} · ${esc(u.email||"no email")}</p>
+        <p class="muted" style="margin:2px 0">${esc(u.address||"No delivery address saved")}</p>`
+      :`<p class="muted">No profile yet. Your name and address prefill checkout.</p>`}
+    </div>
+    <div class="card">
+      <div class="row"><b>Data</b></div>
+      <p class="muted" style="font-size:13px">Everything is stored locally in your browser (localStorage). Export a backup or restore one below.</p>
+      <div class="row" style="justify-content:flex-start;gap:8px">
+        <button class="btn sm" id="exportBtn">Export JSON</button>
+        <button class="btn ghost sm" id="importBtn">Import</button>
+        <button class="btn ghost sm" id="resetBtn" style="color:var(--danger);border-color:var(--danger)">Reset demo</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+    </div>`;
+}
+
+/* ---- wiring ---- */
+function wire(){
+  $$("[data-tab]").forEach(b=>b.onclick=()=>{view=b.dataset.tab;render();});
+  const q=$("#q");
+  if(q){ q.oninput=()=>{ shopQ=q.value; const at=q.selectionStart; render();
+    const q2=$("#q"); q2.focus(); q2.setSelectionRange(at,at); }; }
+  $$("[data-cat]").forEach(b=>b.onclick=()=>{shopCat=Number(b.dataset.cat);render();});
+  $$("[data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();setQty(Number(b.dataset.add),1);render();toast("Added to cart");});
+  $$("[data-inc]").forEach(b=>b.onclick=e=>{e.stopPropagation();
+    const id=Number(b.dataset.inc); const l=state.cart.find(c=>c.item_id===id);
+    setQty(id,(l?l.quantity:0)+1);render();});
+  $$("[data-dec]").forEach(b=>b.onclick=e=>{e.stopPropagation();
+    const id=Number(b.dataset.dec); const l=state.cart.find(c=>c.item_id===id);
+    setQty(id,(l?l.quantity:0)-1);render();});
+  $$("[data-view]").forEach(b=>b.onclick=()=>itemModal(Number(b.dataset.view)));
+  $$("[data-advance]").forEach(b=>b.onclick=()=>{
+    const o=state.orders.find(x=>x.id===b.dataset.advance);
+    if(o&&o.status_id<4){o.status_id++;save();render();toast("Order "+o.transaction_code+" → "+statusName(o.status_id));}});
+  $$("[data-cancel]").forEach(b=>b.onclick=()=>{
+    const o=state.orders.find(x=>x.id===b.dataset.cancel);
+    if(o&&o.status_id===1&&confirm("Cancel order #"+o.transaction_code+"?")){
+      o.status_id=5;save();render();toast("Order cancelled");}});
+  $("#editProfile")&&($("#editProfile").onclick=profileModal);
+  $("#exportBtn")&&($("#exportBtn").onclick=exportJSON);
+  $("#importBtn")&&($("#importBtn").onclick=()=>$("#importFile").click());
+  $("#importFile")&&($("#importFile").onchange=e=>{
+    if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value="";});
+  $("#resetBtn")&&($("#resetBtn").onclick=()=>{
+    if(confirm("Reset the app to fresh demo data? Your cart, orders and profile will be cleared.")){
+      state=normalize(seed());save();render();toast("Reset to demo data");}});
+}
+
+function renderFab(){
+  const fab=$("#fab"); let action=null,label="";
+  if(view==="cart"&&state.cart.length){ action=checkoutModal; label=`Checkout · ${peso(cartTotal())}`; }
+  fab.textContent=label;
+  fab.style.display=action?"":"none";
+  fab.onclick=action;
+}
+
+/* ---- modals ---- */
+function openModal(html){
+  $("#modalRoot").innerHTML=`
+    <div class="backdrop" id="mBack">
+      <div class="modal" role="dialog" aria-modal="true">
+        <button class="icon close" id="mClose" aria-label="Close">✕</button>${html}
+      </div>
+    </div>`;
+  $("#mBack").onclick=e=>{if(e.target.id==="mBack")closeModal();};
+  $("#mClose").onclick=closeModal;
+}
+function closeModal(){$("#modalRoot").innerHTML="";}
+
+function itemModal(id){
+  const it=item(id); if(!it) return;
+  const cat=state.categories.find(c=>c.id===it.category_id);
+  const line=state.cart.find(c=>c.item_id===id);
+  openModal(`
+    <div style="font-size:64px;text-align:center;padding:10px 0">${it.image_path}</div>
+    <h3 style="margin:4px 0">${esc(it.name)}</h3>
+    <p class="muted" style="margin:0 0 6px;font-size:13px">${esc(cat?cat.name:"")}</p>
+    <p style="margin:6px 0 12px">${esc(it.description||"")}</p>
+    <div class="row">
+      <span class="total" style="color:var(--brand)">${peso(it.price)}</span>
+      <button class="btn" id="m-add">${line?"Add one more":"Add to cart"}</button>
+    </div>`);
+  $("#m-add").onclick=()=>{
+    const l=state.cart.find(c=>c.item_id===id);
+    setQty(id,(l?l.quantity:0)+1);
+    closeModal();render();toast("Added to cart");
+  };
+}
+
+function profileModal(){
+  const u=state.user;
+  openModal(`
+    <h3>My profile</h3>
+    <label>First name<input id="f-first" value="${esc(u.firstname)}"></label>
+    <label>Last name<input id="f-last" value="${esc(u.lastname)}"></label>
+    <label>Username<input id="f-user" value="${esc(u.username)}"></label>
+    <label>Email<input id="f-email" type="email" value="${esc(u.email)}"></label>
+    <label>Delivery address<textarea id="f-addr" rows="3">${esc(u.address)}</textarea></label>
+    <button class="btn" id="f-save" style="width:100%">Save profile</button>`);
+  $("#f-save").onclick=()=>{
+    state.user={
+      firstname:$("#f-first").value.trim(), lastname:$("#f-last").value.trim(),
+      username:$("#f-user").value.trim(),   email:$("#f-email").value.trim(),
+      address:$("#f-addr").value.trim()
+    };
+    save();closeModal();render();toast("Profile saved");
+  };
+}
+
+function checkoutModal(){
+  if(!state.cart.length) return;
+  openModal(`
+    <h3>Checkout</h3>
+    <p class="muted" style="margin:0">${cartCount()} item${cartCount()===1?"":"s"} · <b style="color:var(--brand)">${peso(cartTotal())}</b></p>
+    <label>Deliver to<textarea id="c-addr" rows="3" placeholder="Street, barangay, city…">${esc(state.user.address)}</textarea></label>
+    <label>Payment mode<select id="c-pay">${PAYMENT_MODES.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select></label>
+    <button class="btn" id="c-place" style="width:100%">Place order</button>`);
+  $("#c-place").onclick=()=>{
+    const addr=$("#c-addr").value.trim();
+    if(!addr){toast("Delivery address is required");$("#c-addr").focus();return;}
+    if(addr!==state.user.address){state.user.address=addr;}
+    const order={
+      id:uid(),
+      transaction_code:txCode(),
+      purchase_date:new Date().toISOString(),
+      status_id:1,
+      payment_mode_id:Number($("#c-pay").value),
+      address:addr,
+      items:state.cart.map(c=>{const it=item(c.item_id)||{};
+        return {item_id:c.item_id,name:it.name||"?",price:it.price||0,quantity:c.quantity};})
+    };
+    state.orders.push(order);
+    state.cart=[];
+    save();closeModal();view="orders";render();
+    toast("Order placed! #"+order.transaction_code);
+  };
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`b20shop-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();URL.revokeObjectURL(a.href);
+}
+function importJSON(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!confirm("Replace all current data with the imported file?"))return;
+      state=normalize(data);save();render();toast("Imported");
+    }catch(e){toast("Invalid file");}
+  };
+  r.readAsText(file);
+}
+
+render();
+</script>
+</body>
+</html>
