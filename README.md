@@ -1,35 +1,16 @@
-# B20 Shop — e-commerce
+# B20 Shop — professional e-commerce storefront
 
-A self-contained e-commerce storefront in a single `index.html` — no build step,
-no dependencies, works offline. Live at **https://peremiller.github.io/e-commerce/**
+A polished, responsive storefront for everyday essentials, deployed on GitHub Pages.
 
-Implements the `b20_ecommerce` database design (see [`sources/b20_ecommerce.sql`](sources/b20_ecommerce.sql)):
+**Live site:** https://peremiller.github.io/e-commerce/
 
-| SQL table | In the app |
-|---|---|
-| `categories` | Category filter chips in the Shop tab |
-| `items` | Product catalog (name, price, description, image, category) |
-| `orders` | Orders tab — 12-char `transaction_code`, purchase date, status, payment mode |
-| `orders_items` | Line items (item, quantity, price at purchase) inside each order |
-| `statuses` | Pending → Processing → Shipped → Delivered / Cancelled |
-| `payment_modes` | Cash on Delivery, Credit/Debit Card, GCash, Bank Transfer |
-| `users` | Account tab profile (name, username, email, delivery address) |
+## Highlights
 
-## Features
+- 18-item catalog with professional product photography, search, and category filters
+- Wishlist, product details, responsive cart, shipping totals, and secure checkout flow
+- Order confirmation, purchase history, status progression, cancellation, and profile management
+- Local persistence plus JSON import/export for portable demo data
+- Accessible keyboard states and responsive desktop/mobile layouts
+- Optimized WebP images, locally bundled fonts, and a lightweight Preact runtime
 
-- 🛍 Product catalog with search + category filters, item detail view
-- 🛒 Cart with quantity steppers and live total (₱)
-- ✅ Checkout: delivery address + payment mode → order with transaction code
-- 📦 Order history with status progression and cancellation
-- 👤 Profile that prefills checkout; JSON export/import backup
-- 📱 Mobile-first, automatic dark mode, all data in `localStorage`
-
-## Run locally
-
-Just open `index.html` in a browser — that's it.
-
-## History
-
-The original 2019 PHP/MySQL app was committed as a submodule pointer whose
-source repository was never published, so only the SQL dump survived. This
-rebuild reimplements the same schema as a static app that GitHub Pages can host.
+The original SQL reference remains in [`sources/b20_ecommerce.sql`](sources/b20_ecommerce.sql).
