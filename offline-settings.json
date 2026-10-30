@@ -1,0 +1,5 @@
+{
+  "app": "e-commerce",
+  "limits": "Product browsing and browser-local demo orders work offline. This app does not process real online payments.",
+  "spa": true
+}
